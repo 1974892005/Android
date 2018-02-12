@@ -1,19 +1,20 @@
 ## ChatInput
 
-[English Document](./README_EN.md)
+[中文文档](./README.md)
 
-这是一个聊天界面输入框组件，可以方便地结合 `MessageList` 使用，包含录音，选择图片，拍照等功能，提供了一些丰富的接口和回调供用户使用，
-还可以选择自定义样式。
+This is a input component in chatting interface, can combine Aurora IMUI conveniently. Including
+features like record voice and video, select photo, take picture etc, supports customize style either.
 
-## 下载
-提供了以下几种方式添加依赖，只需要选择其中一种即可。
 
-- Gradle
+## Download
+Provides several ways to add dependency, you can choose one of them:
+
+- Via Gradle
 ```
 compile 'cn.jiguang.imui:chatinput:0.1.0'
 ```
 
-- Maven
+- Via Maven
 
 ```
 <dependency>
@@ -24,8 +25,8 @@ compile 'cn.jiguang.imui:chatinput:0.1.0'
 </dependency>
 ```
 
-- JitPack
-> project 下的 build.gradle
+- Via JitPack
+> project's build.gradle
 
 ```
 allprojects {
@@ -37,7 +38,7 @@ allprojects {
 
 ```
 
-> module 的 build.gradle
+> module's build.gradle
 
 ```
 dependencies {
@@ -45,10 +46,10 @@ dependencies {
 }
 ```
 
-## 用法
-使用 ChatInput 只需要两个步骤。
+## Usage
+Using ChatInputView only need two steps.
 
-#### 在 xml 布局文件中引用 ChatInputView：
+#### Step one: add `ChatInputView` in xml layout
 
 ```
     <cn.jiguang.imui.chatinput.ChatInputView
@@ -66,54 +67,66 @@ dependencies {
 
 ```
 
-#### 初始化 ChatInputView
+#### Step two: init `ChatInputView`
 
 ```
 ChatInputView chatInputView = (ChatInputView) findViewById(R.id.chat_input);
 chatInputView.setMenuContainerHeight(softInputHeight);
 ```
-**初始化后一定要设置一下 MenuContainer 的高度，最好设置为软键盘的高度，否则会导致第一次打开菜单时高度不正常（此时打开软键盘会导致界面伸缩）。**
 
-建议在跳转到聊天界面之前使用 onSizeChanged 方法监听软键盘的高度，然后在初始化的时候设置即可，
-关于监听软键盘高度的方法可以参考 sample 下的 MessageListActivity 及 ChatView 中的 onSizeChanged 相关方法。
+Attention please, **MUST** set MenuContainer's height after init ChatInputView. Best suggestion: get
+soft keyboard height from other activity(Like login Activity), then set soft keyboard height via:
+```
+ChatInputView chatinput = (ChatInputView) findViewById(R.id.chat_input);
+chatinput.setMenuContainerHeight(softKeyboardHeight);
+```
 
-## 重要接口及事件
-ChatInputView 提供了各种按钮及事件的监听回调，所以用户可以灵活地运用监听事件做一些操作，如发送消息等事件。
+As for how to get soft keyboard height, you can listen `onSizeChanged` method.
+Please [refer onSizeChanged in sample's MessageListActivity](./../sample/exampleui/src/main/java/imui/jiguang/cn/imuisample/messages/MessageListActivity.java#L340),
+and [onSizedChanged in sample's ChatView](./../sample/exampleui/src/main/java/imui/jiguang/cn/imuisample/views/ChatView.java#L102).
+
+
+## Import interface and event
+ChatInputView offers all kinds of click listener of button and event's callback, so that user can use
+event listener to do their stuff flexibly. Such as send message event etc.
 
 #### OnMenuClickListener
-首先是输入框下面的菜单栏事件的监听，调用 chatInputView.setMenuClickListener 即可设置监听：
+First of all, `OnMenuClickListener` handling click event of menu item. Call `chatInputView.setMenuClickListener`
+can set this listener:
 ```
 chatInput.setMenuClickListener(new OnMenuClickListener() {
     @Override
     public boolean onSendTextMessage(CharSequence input) {
-         // 输入框输入文字后，点击发送按钮事件
+         // After input content and click send button will fire this callback
     }
 
     @Override
     public void onSendFiles(List<String> list) {
-        // 选中文件或者录制完视频后，点击发送按钮触发此事件
+        // chose photo or video files or finished recording video, 
+        // then click send button fires this event.
     }
 
     @Override
     public void switchToMicrophoneMode() {
-        // 点击语音按钮触发事件，显示录音界面前触发此事件
+        // click mic button in menu item, fires before showing record voice widget
     }
 
     @Override
     public void switchToGalleryMode() {
-        // 点击图片按钮触发事件，显示图片选择界面前触发此事件
+        // click photo button in menu item, fires before showing select photo widget
     }
 
     @Override
     public void switchToCameraMode() {
-        // 点击拍照按钮触发事件，显示拍照界面前触发此事件
+        // click camera button in menu item, fires before showing camera widget
     }
 });
 ```
-关于上述事件的处理，可以参考 sample 中的 MessageListActivity 对于事件的处理。
+
+As for how to handle these events and what to do with these events, you can refer sample project for detail.
 
 #### RecordVoiceListener
-这是录音的接口，使用方式：
+This is the interface of record voice, the way to use:
 
 ```
 mRecordVoiceBtn = mChatInput.getRecordVoiceButton();
@@ -121,7 +134,7 @@ mRecordVoiceBtn.setRecordVoiceListener(new RecordVoiceListener() {
     @Override
     public void onStartRecord() {
         // Show record voice interface
-        // 设置存放录音文件目录
+        // set directory to save audio files
         File rootDir = mContext.getFilesDir();
         String fileDir = rootDir.getAbsolutePath() + "/voice";
         mRecordVoiceBtn.setRecordVoiceFile(fileDir, new DateFormat().format("yyyy_MMdd_hhmmss",
@@ -145,7 +158,7 @@ mRecordVoiceBtn.setRecordVoiceListener(new RecordVoiceListener() {
 ```
 
 #### OnCameraCallbackListener
-这是相机相关的接口，使用方式：
+This is interface related to camera, usage like：
 ```
 mChatInput.setOnCameraCallbackListener(new OnCameraCallbackListener() {
     @Override
@@ -169,7 +182,9 @@ mChatInput.setOnCameraCallbackListener(new OnCameraCallbackListener() {
                                        
     @Override
     public void onFinishVideoRecord(String videoPath) {
-        // 请注意，点击发送视频的事件会回调给 onSendFiles，这个是在录制完视频后触发的                               
+        // Fires when finished recording video.
+        // Pay attention here, when you finished recording video and click send
+        // button in screen, will fire onSendFiles() method.
     }
                                        
     @Override
@@ -179,12 +194,12 @@ mChatInput.setOnCameraCallbackListener(new OnCameraCallbackListener() {
 });
 ```
 
-
-#### 设置拍照后保存的文件
+#### Set file path and file name that after taken picture
 setCameraCaptureFile(String path, String fileName)
 
 ```
-// 参数分别是路径及文件名，建议在上面的 onCameraClick 触发时调用
+// The first parameter is file path that saved at, second one is file name
+// Suggest calling this method when onCameraClick fires
 mChatInput.setCameraCaptureFile(path, fileName);
 
 ```
